@@ -1,0 +1,135 @@
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+struct Employee {
+    int id;
+    char name[30];
+    float basic, allowance, deduction;
+};
+
+void addPayroll() {
+    Employee e;
+
+    cout << "Enter ID: ";
+    cin >> e.id;
+
+    cout << "Enter Name: ";
+    cin >> e.name;
+
+    cout << "Enter Basic Salary: ";
+    cin >> e.basic;
+
+    cout << "Enter Allowance: ";
+    cin >> e.allowance;
+
+    cout << "Enter Deduction: ";
+    cin >> e.deduction;
+
+    if (e.basic < 0 || e.allowance < 0 ||
+        e.deduction < 0 ||
+        e.deduction > e.basic + e.allowance) {
+        cout << "Invalid salary!\n";
+        return;
+    }
+
+    cout << "Gross Salary: "
+         << e.basic + e.allowance << endl;
+
+    cout << "Net Salary: "
+         << e.basic + e.allowance - e.deduction << endl;
+
+    ofstream file("payroll.txt", ios::app);
+
+    file << e.id << " " << e.name << " "
+         << e.basic << " " << e.allowance << " "
+         << e.deduction << endl;
+
+    file.close();
+
+    cout << "Payroll Saved!\n";
+}
+
+void displayPayroll() {
+    Employee e;
+    ifstream file("payroll.txt");
+
+    while (file >> e.id >> e.name
+                >> e.basic >> e.allowance >> e.deduction) {
+        cout << "\nID: " << e.id;
+        cout << "\nName: " << e.name;
+        cout << "\nGross Salary: "
+             << e.basic + e.allowance;
+        cout << "\nNet Salary: "
+             << e.basic + e.allowance - e.deduction << endl;
+    }
+
+    file.close();
+}
+
+void searchPayroll() {
+    Employee e;
+    int id, found = 0;
+
+    cout << "Enter ID to search: ";
+    cin >> id;
+
+    ifstream file("payroll.txt");
+
+    while (file >> e.id >> e.name
+                >> e.basic >> e.allowance >> e.deduction) {
+        if (e.id == id) {
+            cout << "Name: " << e.name << endl;
+            cout << "Gross Salary: "
+                 << e.basic + e.allowance << endl;
+            cout << "Net Salary: "
+                 << e.basic + e.allowance - e.deduction << endl;
+
+            found = 1;
+        }
+    }
+
+    if (!found)
+        cout << "Employee Not Found!\n";
+
+    file.close();
+}
+
+int main() {
+    int choice;
+
+    do {
+        cout << "\n--- IMF PAYROLL ---\n";
+        cout << "1. Add Payroll\n";
+        cout << "2. Display Payroll\n";
+        cout << "3. Search Payroll\n";
+        cout << "4. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addPayroll();
+                break;
+
+            case 2:
+                displayPayroll();
+                break;
+
+            case 3:
+                searchPayroll();
+                break;
+
+            case 4:
+                cout << "Thank You!\n";
+                break;
+
+            default:
+                cout << "Invalid Choice!\n";
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}
